@@ -54,6 +54,15 @@ async function run() {
       const result = await userCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+
+    // limit dashboard access
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      console.log(user);
+      const isAdmin = user.role === "admin";
+      res.send({ admin: isAdmin });
+    });
   } finally {
   }
 }
