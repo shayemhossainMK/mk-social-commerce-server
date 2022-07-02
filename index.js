@@ -25,6 +25,11 @@ async function run() {
 
     const userCollection = client.db("mk-social-commerce").collection("user");
 
+    //get all user
+    app.get("/user", async (req, res) => {
+      const users = await userCollection.find().toArray();
+      res.send(users);
+    });
     // this is for user collection
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
@@ -36,6 +41,17 @@ async function run() {
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);
 
+      res.send(result);
+    });
+
+    // this is make admin
+    app.put("/user/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $set: { role: "admin" },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
   } finally {
